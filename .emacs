@@ -1,23 +1,6 @@
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:family "Comic Code" :foundry "outline" :slant normal :weight normal :height 113 :width normal)))))
+(custom-set-faces '(default((t(:family "Comic Code" :foundry "outline" :slant normal :weight normal :height 113 :width normal)))))
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(kept-new-versions 6)
- '(kept-old-versions 6)
- '(ring-bell-function (quote ignore))
- '(visible-bell t)
- '(show-paren-mode t)
-)
-
-;;Edit .emacs file (Decalred early so I can call it when there are errors.)
+;;Visit .emacs file (Decalred early so I can call it when there are errors.)
 (defun ii () "Opens the .emacs initialization file." (interactive)
        (find-file "~/.emacs")
 )
@@ -43,7 +26,7 @@
 ;;;;;;;;;;;;;;;;;;
 ;;I use Pause for whatever weird shit I'm working on.
 (define-key global-map [pause] (setq mark-active t))
-;;No screwing with my middle mouse button
+;;No screwing with my middle mouse button (TODO: Maybe make it paste later.)
 (global-unset-key [mouse-2])
 ;;[TRANSLATIONS]
 ;;Switch C-x&C-c and C-o&C-p to get Windows-like copy paste behavior
@@ -93,22 +76,30 @@
 (define-key global-map "\es" 'save-buffer)
 (define-key global-map "\C-s" 'save-buffer)
 (define-key global-map (kbd "M-<f4>") 'kill-emacs)
-;;Find file
+;;[FINDING FILES TO VISIT]
 (define-key global-map "\ef" 'find-file)
 (define-key global-map "\eF" 'find-file-other-window)
 ;;[RANDOM FUN]
 (define-key global-map "\ep" 'quick-calc)
 (define-key global-map "\eq" 'describe-function) ;;HELP
-(define-key global-map "\eQ" 'describe-variable)
+(define-key global-map "\eQ" 'describe-variable) ;;HELP 2: The Squeakquel
 
 ;;;;;;;;;;;;;;;;;;;;
 ;;      INIT      ;;
 ;;;;;;;;;;;;;;;;;;;;
+(custom-set-variables
+	'(kept-new-versions 6)
+	'(kept-old-versions 6)
+	'(visible-bell t)
+	'(show-paren-mode t)
+	'(ring-bell-function (quote ignore))
+	)
+
 ;;[SYSTEM AND NAVIGATION]
 (global-display-line-numbers-mode t)
 (setq display-line-numbers-type 'relative)
 (add-to-list 'default-frame-alist '(fullscreen . maximized));;Maximize
-(split-window-horizontally);;Just 1 split to get us started
+(setq-default truncate-lines t);;Lines run off the page. Otherwise relative nums freak out.
 (tool-bar-mode 0)
 (menu-bar-mode 0)
 (scroll-bar-mode 0)
@@ -120,21 +111,23 @@
 (setq mouse-wheel-progressive-speed nil);;Don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't);;Scroll window under mouse
 (setq scroll-step 3);;From Casey's config; Do I even need this anymore?
+;;[INDENTING AND TABS]
+(setq c-default-style "bsd"  c-basic-offset 4)
+(setq c-offsets-alist '((arglist-intro . +)))
+(c-set-offset 'substatement-open 0) ;;Makes looks indent correctly
+(electric-indent-mode t);;No forced indenting
+(setq-default indent-tabs-mode t)
+(setq-default tab-width 4);;4 spaces wide
+(defvaralias 'c-basic-offset 'tab-width)
 ;;[EDITING]
 (set-language-environment "UTF-8")
 (setq Undo-Limit 20000000)
 (setq Undo-Strong-Limit 40000000)
 (delete-selection-mode 1);;Typing deletes region
-(electric-indent-mode 0);;No forced indenting
-(setq-default indent-tabs-mode t)
-(setq-default tab-width 4);;4 spaces wide
-(defvaralias 'c-basic-offset 'tab-width)
-(add-hook 'emacs-lisp-mode-hook (lambda () (setq indent-tabs-mode t)));;elisp too
+(add-hook 'emacs-lisp-mode-hook (lambda()(setq indent-tabs-mode t)));;use tabs in elisp too
 ;;Stuff from Casey that I don't understand yet (but have for some reason)
 (setq next-line-add-newlines nil)
-(setq-default truncate-lines t)
 (setq truncate-partial-width-windows nil)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;      FUNCTIONS AND TOOLS      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -229,7 +222,12 @@
 		(backward-delete-char 1)
 		(call-interactively 'backward-delete-char))
 )
-
+(defun ww ()
+	"Default to default view, split horizontally."
+	(interactive)
+	(delete-other-windows)
+	(split-window-horizontally)
+)
 ;;;;;;;;;;;;;;;;;;;;;;
 ;;   EXPERIMENTAL   ;;
 ;;;;;;;;;;;;;;;;;;;;;;
@@ -298,9 +296,124 @@
 (modify-face 'font-lock-important-face "Yellow" nil nil t nil t nil nil)
 (modify-face 'font-lock-note-face "Dark Green" nil nil t nil t nil nil)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;      Jim's color scheme      ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun colors-jim () "Switches to Jim's color scheme." (interactive)
+	(custom-set-faces
+		'(default ((t (:foreground "ivory2" :background "#343036"))))
+		'(custom-group-tag-face ((t (:underline t :foreground "black"))) t)
+		'(custom-variable-tag-face ((t (:underline t :foreground "black"))) t)
+		'(font-lock-builtin-face ((t (:foreground "wheat4"))))
+		'(font-lock-comment-face ((t (:foreground "#00ff00"))))
+		'(font-lock-constant-face ((t (:foreground "wheat4"))))
+		'(font-lock-function-name-face ((((class color) (background dark)) (:foreground "white"))))
+		'(font-lock-keyword-face ((t (:foreground "OrangeRed1" ))))
+		'(font-lock-string-face ((t (:foreground "cyan1"))))
+		'(font-lock-type-face ((t (:foreground "yellow2"))))
+		'(font-lock-variable-name-face ((t (:foreground "MediumOrchid1"))));;c8d4ec
+		'(font-lock-warning-face ((t (:foreground "red1"))))
+		'(mode-line ((t (:inverse-video t))))
+		'(region ((t (:background "black"))))
+		'(widget-field-face ((t (:foreground "white"))) t)
+		'(widget-single-line-field-face ((t (:background "darkgray"))) t)
+	)
+	(global-font-lock-mode 1)
+    (set-cursor-color "lightgreen")
+)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;      Jon Blow's color scheme      ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;I should have the original archived with notes somewhere...
+(defun colors-jon () "Switches to Jon Blow's color scheme." (interactive)
+	(custom-set-faces
+		'(default ((t (:foreground "#d3b58d" :background "#041818"))))
+		'(custom-group-tag-face ((t (:underline t :foreground "lightblue"))) t)
+		'(custom-variable-tag-face ((t (:underline t :foreground "lightblue"))) t)
+		'(font-lock-builtin-face ((t nil)))
+		;; '(font-lock-comment-face ((t (:foreground "yellow"))))
+		'(font-lock-comment-face ((t (:foreground "#3fdf1f"))))
+		'(font-lock-function-name-face ((((class color) (background dark)) (:foreground "white"))))
+		'(font-lock-keyword-face ((t (:foreground "white" ))))
+		;; '(font-lock-string-face ((t (:foreground "gray160" :background "gray16"))))
+		'(font-lock-string-face ((t (:foreground "#0fdfaf"))))
+		'(font-lock-variable-name-face ((((class color) (background dark)) (:foreground "#c8d4ec"))))  
+		;; '(font-lock-warning-face ((t (:foreground "#695a46"))))
+		'(font-lock-warning-face ((t (:foreground "#504038"))))
+		'(highlight ((t (:foreground "navyblue" :background "darkseagreen2"))))
+		'(mode-line ((t (:inverse-video t))))
+		'(region ((t (:background "blue"))))
+		'(widget-field-face ((t (:foreground "white"))) t)
+		'(widget-single-line-field-face ((t (:background "darkgray"))) t)
+	)
+	(global-font-lock-mode 1)
+	(set-cursor-color "lightgreen")
+	(set-background-color "#072626")
+	(global-set-key [C-return] 'save-buffer)
+	(set-face-foreground 'font-lock-builtin-face         "lightgreen")
+)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;      Default theme      ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(colors-jim)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;   RAINBOW DELIMITERS  ;;
+;;      Final setup      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(split-window-horizontally);;Just 1 split to get us started
+
+
+
+
+
+
+
+
+
+
+
+
+;;Everything below this line is for Rainbow Delimiters.
+;;https://github.com/Fanael/rainbow-delimiters/tree/master
+;;It's a lot of code, so I keep it separated with this huge comment block. -Jim
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;; ;;   RAINBOW DELIMITERS  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;https://github.com/Fanael/rainbow-delimiters/tree/master
 (defgroup rainbow-delimiters nil
   "Highlight nested parentheses, brackets, and braces according to their depth."
@@ -521,66 +634,3 @@ Used by font-lock for dynamic highlighting."
 	'(rainbow-delimiters-unmatched-face ((t (:foreground "white" :background "red"))))
 	'(rainbow-delimiters-mismatched-face ((t (:foreground "white" :background "red"))))
 )
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;      Jim's color scheme      ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun jims-theme () "Switches to Jim's color scheme." (interactive)
-	(custom-set-faces
-		'(default ((t (:foreground "ivory2" :background "#343036"))))
-		'(custom-group-tag-face ((t (:underline t :foreground "black"))) t)
-		'(custom-variable-tag-face ((t (:underline t :foreground "black"))) t)
-		'(font-lock-builtin-face ((t (:foreground "wheat4"))))
-		'(font-lock-comment-face ((t (:foreground "#00ff00"))))
-		'(font-lock-constant-face ((t (:foreground "wheat4"))))
-		'(font-lock-function-name-face ((((class color) (background dark)) (:foreground "white"))))
-		'(font-lock-keyword-face ((t (:foreground "OrangeRed1" ))))
-		'(font-lock-string-face ((t (:foreground "cyan1"))))
-		'(font-lock-type-face ((t (:foreground "yellow2"))))
-		'(font-lock-variable-name-face ((t (:foreground "MediumOrchid1"))));;c8d4ec
-		'(font-lock-warning-face ((t (:foreground "red1"))))
-		'(mode-line ((t (:inverse-video t))))
-		'(region ((t (:background "black"))))
-		'(widget-field-face ((t (:foreground "white"))) t)
-		'(widget-single-line-field-face ((t (:background "darkgray"))) t)
-	)
-	(global-font-lock-mode 1)
-    (set-cursor-color "lightgreen")
-)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;      Jon Blow's color scheme      ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;I should have the original archived with notes somewhere...
-(defun jons-theme () "Switches to Jon Blow's color scheme." (interactive)
-	(custom-set-faces
-		'(default ((t (:foreground "#d3b58d" :background "#041818"))))
-		'(custom-group-tag-face ((t (:underline t :foreground "lightblue"))) t)
-		'(custom-variable-tag-face ((t (:underline t :foreground "lightblue"))) t)
-		'(font-lock-builtin-face ((t nil)))
-		;; '(font-lock-comment-face ((t (:foreground "yellow"))))
-		'(font-lock-comment-face ((t (:foreground "#3fdf1f"))))
-		'(font-lock-function-name-face ((((class color) (background dark)) (:foreground "white"))))
-		'(font-lock-keyword-face ((t (:foreground "white" ))))
-		;; '(font-lock-string-face ((t (:foreground "gray160" :background "gray16"))))
-		'(font-lock-string-face ((t (:foreground "#0fdfaf"))))
-		'(font-lock-variable-name-face ((((class color) (background dark)) (:foreground "#c8d4ec"))))  
-		;; '(font-lock-warning-face ((t (:foreground "#695a46"))))
-		'(font-lock-warning-face ((t (:foreground "#504038"))))
-		'(highlight ((t (:foreground "navyblue" :background "darkseagreen2"))))
-		'(mode-line ((t (:inverse-video t))))
-		'(region ((t (:background "blue"))))
-		'(widget-field-face ((t (:foreground "white"))) t)
-		'(widget-single-line-field-face ((t (:background "darkgray"))) t)
-	)
-	(global-font-lock-mode 1)
-	(set-cursor-color "lightgreen")
-	(set-background-color "#072626")
-	(global-set-key [C-return] 'save-buffer)
-	(set-face-foreground 'font-lock-builtin-face         "lightgreen")
-)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;      Default theme      ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(jims-theme)
