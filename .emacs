@@ -1,44 +1,23 @@
 ;;;;;;;;;;;;;;;;;
 ;; NET LOADING ;;
 ;;;;;;;;;;;;;;;;;
-;(let ((response ""))
-;	;;Prompt for net config
-;	(while (not (or (equal response "y") (equal response "n") ))
-;		(setq response (read-string "Load .emacs config from Github? (y/n): "))
-;	)
-;	;;If "y" was entered, eval net config.
-;	(when (equal response "y")
-;		(save-window-excursion
-;			(eval-buffer (browse-url-emacs "https://raw.githubusercontent.com/zyusouken/dotEmacs/main/.emacs"))
-;		)
-;		(error "SUCCESS! (I think...) Config loaded from net. Cancelling eval of local config file.")
-;	)
-;	)
-
-
-
-;;;;;;;;;;;;;;;;;
-;; NEW LOADING ;;
-;; NEW LOADING ;;
-;; NEW LOADING ;;
-;;;;;;;;;;;;;;;;;
+(if (boundp 'fetchedOnline)
+    (setq skipCheck t)
+	(setq fetchedOnline t)
+)
 (let ((response ""))
-	;;Prompt for net config, unless fetched online.
-	(while (not (or (equal response "y") (equal response "n") (boundp 'fetchedOnline)))
+	;;Prompt for net config
+	(while (not (or (equal response "y") (equal response "n") (boundp 'skipCheck)))
 		(setq response (read-string "Load .emacs config from Github? (y/n): "))
 	)
 	;;If "y" was entered, eval net config.
-	(if (equal response "y")
-		(progn
-			(save-window-excursion
-				(eval-buffer (browse-url-emacs "https://raw.githubusercontent.com/zyusouken/dotEmacs/main/.emacs"))
-				(setq fetchedOnline t)
-				;;(error "SUCCESS! (I think...) Config loaded from net. Cancelling eval of local config file.")
-			)
+	(when (equal response "y")
+		(save-window-excursion
+			(eval-buffer (browse-url-emacs "https://raw.githubusercontent.com/zyusouken/dotEmacs/main/.emacs"))
+			(error "SUCCESS! (I think...) Config loaded from net. Cancelling eval of local config file.")
 		)
-		(progn ;;else, use local
-
-	  (quick-calc)
+	)
+)
 
 ;;If we didn't load from the net, we can settle for local .emacs ↓↓↓↓↓↓
 ;;If we didn't load from the net, we can settle for local .emacs ↓↓↓↓↓↓
@@ -671,12 +650,3 @@ Used by font-lock for dynamic highlighting."
 	'(rainbow-delimiters-unmatched-face ((t (:foreground "white" :background "red"))))
 	'(rainbow-delimiters-mismatched-face ((t (:foreground "white" :background "red"))))
 )
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; STUFF FOR NET FETCHING ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-);;END progn else, use local
-);;END the big IF for fetching online
-);;END initial LET for net fetch check
