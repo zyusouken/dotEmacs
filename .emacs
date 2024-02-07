@@ -37,6 +37,7 @@
 	(define-key map (kbd "M-d") 'dupe-line-prompt)
 	(define-key map (kbd "M-c") 'insert-comment-block)
 	map)
+	(delete-selection-mode 1);;Delete highlighted text when you type
 	"jims-keys-minor-mode keymap."
 )
 (define-minor-mode jims-keys-minor-mode
