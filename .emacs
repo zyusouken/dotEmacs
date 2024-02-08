@@ -37,7 +37,6 @@
 	(define-key map (kbd "M-d") 'dupe-line-prompt)
 	(define-key map (kbd "M-c") 'insert-comment-block)
 	map)
-	(delete-selection-mode 1);;Typing deletes region
 	"jims-keys-minor-mode keymap."
 )
 (define-minor-mode jims-keys-minor-mode
@@ -150,6 +149,7 @@
 (setq Undo-Limit 20000000)
 (setq Undo-Strong-Limit 40000000)
 (add-hook 'emacs-lisp-mode-hook (lambda()(setq indent-tabs-mode t)));;use tabs in elisp too
+(delete-selection-mode 1);;Typing deletes region
 ;;Stuff from Casey that I don't understand yet (but have for some reason)
 (setq next-line-add-newlines nil)
 (setq truncate-partial-width-windows nil)
