@@ -8,7 +8,7 @@
 (defun uu () "Update .emacs file" (interactive)
 	   (browse-url-emacs "https://raw.githubusercontent.com/zyusouken/dotEmacs/main/.emacs")
 	   (write-file "~/.emacs")
-	   (kill-buffer)
+	   (kill-this-buffer)
 	   )
 
 (defvar jims-keys-minor-mode-map
