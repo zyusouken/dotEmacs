@@ -1,34 +1,15 @@
-;;;;;;;;;;;;;;;;;
-;; NET LOADING ;;
-;;;;;;;;;;;;;;;;;
-(if (boundp 'fetchedOnline)
-    (setq skipCheck t)
-	(setq fetchedOnline t)
-)
-(let ((response ""))
-	;;Prompt for net config
-	(while (not (or (equal response "y") (equal response "n") (boundp 'skipCheck)))
-		(setq response (read-string "Load .emacs config from Github? (y/n): "))
-	)
-	;;If "y" was entered, eval net config.
-	(when (equal response "y")
-		(save-window-excursion
-			(eval-buffer (browse-url-emacs "https://raw.githubusercontent.com/zyusouken/dotEmacs/main/.emacs"))
-			(error "SUCCESS! (I think...) Config loaded from net. Cancelling eval of local config file.")
-		)
-	)
-)
-
-;;If we didn't load from the net, we can settle for local .emacs ↓↓↓↓↓↓
-;;If we didn't load from the net, we can settle for local .emacs ↓↓↓↓↓↓
-;;If we didn't load from the net, we can settle for local .emacs ↓↓↓↓↓↓
-
 (custom-set-faces '(default((t(:family "Comic Code" :foundry "outline" :slant normal :weight normal :height 113 :width normal)))))
 
-;;Visit .emacs file (Decalred early so I can call it when there are errors.)
+;;Visit .emacs file (Decalred early so I can still call it when there are errors in this file.)
 (defun ii () "Opens the .emacs initialization file." (interactive)
        (find-file "~/.emacs")
-)
+	   )
+;;Update .emacs from web (Emacs restart or manual eval required after.)
+(defun uu () "Update .emacs file"
+	   (browse-url-emacs "https://raw.githubusercontent.com/zyusouken/dotEmacs/main/.emacs")
+	   (write-file "~/.emacs")
+	   (kill-buffer)
+	   )
 
 (defvar jims-keys-minor-mode-map
 	(let ((map (make-sparse-keymap)))
