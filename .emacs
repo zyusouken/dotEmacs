@@ -5,7 +5,7 @@
        (find-file "~/.emacs")
 	   )
 ;;Update .emacs from web (Emacs restart or manual eval required after.)
-(defun uu () "Update .emacs file"
+(defun uu () "Update .emacs file" (interactive)
 	   (browse-url-emacs "https://raw.githubusercontent.com/zyusouken/dotEmacs/main/.emacs")
 	   (write-file "~/.emacs")
 	   (kill-buffer)
